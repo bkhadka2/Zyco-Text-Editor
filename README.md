@@ -12,3 +12,8 @@ Final Group Project For Advanced Python Fall 2019
 ```
 Tkinter
 ```
+
+# Tutorial for tkinter python
+```
+https://www.geeksforgeeks.org/python-gui-tkinter/
+```
