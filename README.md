@@ -7,3 +7,8 @@ Final Group Project For Advanced Python Fall 2019
 - [x] Rupesh Panta
 - [x] Bishal Khadka
 - [x] Jose Cervantes
+
+# Framework Considered By Bishal Khadka
+```
+Tkinter
+```
