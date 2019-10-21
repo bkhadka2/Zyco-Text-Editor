@@ -8,10 +8,17 @@ Final Group Project For Advanced Python Fall 2019
 - [x] Bishal Khadka
 - [x] Jose Cervantes
 
-# Framework Considered By Bishal Khadka
+# Framework Fixed
 ```
 Tkinter
 ```
+
+# Important:
+```
+If you have any suggestions on what we should be doing for our final project, please commit those suggestions. I will be suggesting my recommendations in couple of days. Thank guys!! Happy tkinter!!
+```
+
+
 
 # Tutorial for tkinter python
 ```
