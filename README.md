@@ -33,6 +33,6 @@ Build a Text editor
 
 # Type in your name below if you are okay with the text editor building project
 ```
-- [x]Rupesh Panta
+- [x ]Rupesh Panta
 
 ``` 
