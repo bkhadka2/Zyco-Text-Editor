@@ -1,12 +1,21 @@
-import tkinter
+import tkinter as tk
 
-print(tkinter.TkVersion)
-print(tkinter.TclVersion)
+root = tk.Tk()
+print(tk.TkVersion)
+print(tk.TclVersion)
 
-mainWindow = tkinter.Tk()
-mainWindow.title("Welcome to tkinter demo")
-mainWindow.geometry("700x600")
-myLabel = tkinter.Label(mainWindow, text="Hello Team")
+def displayName():
+    functionRoot = tk.Tk()
+    functionRoot.geometry('700x500')
+    newLabel = tk.Label(functionRoot, text="You are hacked", fg="Green")
+    newLabel.pack()
+
+root.geometry('700x500')
+myLabel = tk.Label(root, text="Hello", fg="red")
 myLabel.pack()
-mainWindow.mainloop()
+myBotton = tk.Button(root, text = "PlayMultiplayer? Click here", command=displayName)
+myBotton.pack()
+root.mainloop()
+
+
 
