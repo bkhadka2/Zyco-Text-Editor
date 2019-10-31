@@ -25,3 +25,14 @@ https://www.geeksforgeeks.org/python-gui-tkinter/
 
 # **Note tkinter demo python file and screenshot added. Find the folder.
 # ***Also guys, do not name your file like tkinter.py because when you import tkinter module in your source code, it will actually try to import your tkinter.py python file instead of the framework itself. So name your python file other than "tkinter.py"
+
+# Project suggestion(Bishal Khadka)
+```
+Build a Text editor
+```
+
+# Type in your name below if you are okay with the text editor building project
+```
+
+
+``` 
