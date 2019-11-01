@@ -24,6 +24,7 @@ class tkinterdemo:
         mycanvas2.pack(side='right')
 
 
+
 if __name__ == '__main__':
     root = tk.Tk()
     root.geometry('700x600')

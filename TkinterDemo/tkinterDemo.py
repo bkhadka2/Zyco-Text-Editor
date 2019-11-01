@@ -10,12 +10,10 @@ def displayName():
     newLabel = tk.Label(functionRoot, text="You are hacked", fg="Green")
     newLabel.pack()
 
+
 root.geometry('700x500')
 myLabel = tk.Label(root, text="Hello", fg="red")
 myLabel.pack()
-myBotton = tk.Button(root, text = "PlayMultiplayer? Click here", command=displayName)
+myBotton = tk.Button(root, text="PlayMultiplayer? Click here", command=displayName)
 myBotton.pack()
 root.mainloop()
-
-
-
