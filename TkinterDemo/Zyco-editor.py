@@ -24,7 +24,7 @@ class ZycoEditor:
         myProgressBar.config(mode='determinate', maximum=11.0, value=4.2)
         value = tk.DoubleVar()
         myProgressBar.config(variable=value)
-        scale = ttk.Scale(self.root, orient='horizontal', length=400, variable=value, from_=0.0, to=11.0)
+        scale = ttk.Scale(self.root, orient='horizontal', length=200, variable=value, from_=0.0, to=11.0)
         scale.pack()
 
     def mainLoopHandling(self):
@@ -33,21 +33,29 @@ class ZycoEditor:
     def uploadNewFile(self):
         print("uploaded new file")
 
+    def clearTheScreen(self):
+        myEntireText = tk.Text.delete(self.root, '1.0', 'END')
+        myEntireText.pack()
+
     def undoEditorFunction(self):
         print("undo done")
 
     def navigation(self):
         menu = tk.Menu(self.root)
         self.root.config(menu=menu)
-        filemenu = tk.Menu(menu)
-        filemenu.add_cascade(label="File", menu=filemenu)
-        filemenu.add_command(label="Upload File", command=self.uploadNewFile)
-        filemenu.add_command(label="Exit", command=self.root.quit())
-        filemenu.add_separator()
+        file = tk.Menu(menu)
+        file.add_command(label="Upload File", command=self.uploadNewFile)
+        file.add_command(label="")
+        menu.add_cascade(label="File", menu=file)
 
-        undomenu = tk.Menu(menu)
-        undomenu.add_cascade(label="Undo", menu=undomenu)
-        undomenu.add_command(label="undo")
+        editmenu = tk.Menu(menu)
+        editmenu.add_command(label='Clear Screen', command=self.clearTheScreen)
+        editmenu.add_command(label="Undo", command=self.undoEditorFunction)
+        menu.add_cascade(label="Edit", menu=editmenu)
+
+        exitmenu = tk.Menu(menu)
+        exitmenu.add_command(label='Exit', command=self.root.quit)
+        menu.add_cascade(label="Exit", menu=exitmenu)
 
 
 if __name__ == '__main__':
