@@ -34,3 +34,8 @@ Build a Text editor
 # Type in your name below if you are okay with the text editor building project
 - [x] Rupesh Panta
 
+# Tasks divided:
+- Rupesh Panta: please work on save as functionality of text editor.
+- Jose Cervantes: Please work on : Changing the font size/ font-family of the selected text.
+- Bishal khadka: undo/menu/clear-the-screen/open-file/exit/text-typing/delete and so on.
+
