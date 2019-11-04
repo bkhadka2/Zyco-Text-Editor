@@ -33,6 +33,7 @@ Build a Text editor
 
 # Type in your name below if you are okay with the text editor building project
 - [x] Rupesh Panta
+- [x] Jose Cervantes
 
 # Tasks divided:
 - Rupesh Panta: please work on save as functionality of text editor.
