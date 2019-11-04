@@ -13,10 +13,10 @@ class ZycoEditor:
         text.pack()
 
     def textDisplayedAtTheBeginning(self):
-        beginningText = tk.Text(self.root, width=400, height=100, font=40)
-        beginningText.insert('1.0 ', 'Welcome to Zyco')
-        beginningText.insert('1.0 lineend', "\nCreated by Bishal Khadka")
-        beginningText.pack()
+        self.beginningText = tk.Text(self.root, width=400, height=100, font=40)
+        self.beginningText.insert('1.0 ', 'Welcome to Zyco')
+        self.beginningText.insert('1.0 lineend', "\nCreated by Bishal Khadka")
+        self.beginningText.pack()
 
     def ProgressBar(self):
         myProgressBar = ttk.Progressbar(self.root, orient="horizontal", length=200)
@@ -34,8 +34,7 @@ class ZycoEditor:
         print("uploaded new file")
 
     def clearTheScreen(self):
-        myEntireText = tk.Text.delete(self.root, '1.0', 'END')
-        myEntireText.pack()
+        self.beginningText.delete('1.0', 'end')
 
     def undoEditorFunction(self):
         print("undo done")
