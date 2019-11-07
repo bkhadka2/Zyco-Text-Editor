@@ -1,6 +1,8 @@
 import tkinter as tk
 from tkinter import ttk
 import socket
+from tkinter import messagebox
+from tkinter import filedialog
 
 class ZycoEditor:
     def __init__(self):
@@ -12,7 +14,7 @@ class ZycoEditor:
         text = tk.Text(self.root, width=400, height=100)
         text.pack()
 
-    def textDisplayedAtTheBeginning(self):
+    def textDisplayed(self):
         self.beginningText = tk.Text(self.root, width=400, height=100, font=40)
         self.beginningText.insert('1.0 ', 'Welcome to Zyco')
         self.beginningText.insert('1.0 lineend', "\nCreated by Bishal Khadka")
@@ -31,7 +33,13 @@ class ZycoEditor:
         self.root = tk.mainloop()
 
     def uploadNewFile(self):
-        print("uploaded new file")
+        filename = filedialog.askopenfile()
+        text = filename.read()
+        dataClearance = messagebox.askyesnocancel(title="Clearing data...", message='screen will be cleared '
+                                                                                    'and uploaded')
+        if dataClearance:
+            self.clearTheScreen()
+            self.beginningText.insert('1.0', text)
 
     def clearTheScreen(self):
         self.beginningText.delete('1.0', 'end')
@@ -39,28 +47,47 @@ class ZycoEditor:
     def undoEditorFunction(self):
         print("undo done")
 
+    def saveasFile(self):
+        print("saved as called")
+
+    def searchword(self):
+
+        # self.beginningText.get(self.root, )
+        print("Search command called")
+
+    def exitCommand(self):
+        a = messagebox.askyesnocancel(title="Exiting...", message='Are you sure want to exit')
+        if a:
+            self.root.quit()
+
     def navigation(self):
         menu = tk.Menu(self.root)
         self.root.config(menu=menu)
+
         file = tk.Menu(menu)
-        file.add_command(label="Upload File", command=self.uploadNewFile)
-        file.add_command(label="")
-        menu.add_cascade(label="File", menu=file)
+        file.add_command(label="Upload File", command=self.uploadNewFile, font=20)
+        menu.add_cascade(label="File", menu=file, font=30)
+
+        file.add_command(label="Save as..", command=self.saveasFile, font=20)
 
         editmenu = tk.Menu(menu)
-        editmenu.add_command(label='Clear Screen', command=self.clearTheScreen)
-        editmenu.add_command(label="Undo", command=self.undoEditorFunction)
-        menu.add_cascade(label="Edit", menu=editmenu)
+        editmenu.add_command(label='Clear Screen', command=self.clearTheScreen, font=20)
+        editmenu.add_command(label="Undo", command=self.undoEditorFunction, font=20)
+        menu.add_cascade(label="Edit", menu=editmenu, font=30)
 
         exitmenu = tk.Menu(menu)
-        exitmenu.add_command(label='Exit', command=self.root.quit)
-        menu.add_cascade(label="Exit", menu=exitmenu)
+        exitmenu.add_command(label='Exit', command=self.exitCommand, font=20)
+        menu.add_cascade(label="Exit", menu=exitmenu, font=30)
+
+        searchmenu = tk.Menu(menu)
+        searchmenu.add_command(label='Search', command=self.searchword, font=20)
+        menu.add_cascade(label="Search", menu=searchmenu, font=30)
 
 
 if __name__ == '__main__':
     editorObj = ZycoEditor()
     editorObj.navigation()
     editorObj.ProgressBar()
-    editorObj.textDisplayedAtTheBeginning()
+    editorObj.textDisplayed()
     editorObj.textInsertion()
     editorObj.mainLoopHandling()
