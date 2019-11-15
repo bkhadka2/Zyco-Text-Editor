@@ -3,12 +3,15 @@ from tkinter import ttk
 import socket
 from tkinter import messagebox
 from tkinter import filedialog
+from tkinter import Frame
+import os
 
 class ZycoEditor:
     def __init__(self):
         self.root = tk.Tk()
         self.root.geometry('1000x900')
         self.root.title("Zyco@{}".format(socket.gethostbyaddr(socket.gethostname())[0]))
+
 
     def textInsertion(self):
         text = tk.Text(self.root, width=400, height=100)
@@ -82,6 +85,19 @@ class ZycoEditor:
         searchmenu = tk.Menu(menu)
         searchmenu.add_command(label='Search', command=self.searchword, font=20)
         menu.add_cascade(label="Search", menu=searchmenu, font=30)
+
+        terminal = tk.Menu(menu)
+        terminal.add_command(label='Terminal', command=self.integratedTerminal, font=20)
+        menu.add_cascade(label="Terminal", menu=terminal, font=30)
+
+    def integratedTerminal(self):
+        self.root = tk.Tk()
+        hostname = socket.gethostbyaddr(socket.gethostname())[0]
+        self.root.title("Terminal@{}".format(hostname))
+        terminalUbuntu = Frame(self.root, height=600, width=700)
+        terminalUbuntu.pack(fill='both', expand='yes')
+        wid = terminalUbuntu.winfo_id()
+        os.system('xterm -into %d -geometry 400x600 -sb &' % wid)
 
 
 if __name__ == '__main__':
