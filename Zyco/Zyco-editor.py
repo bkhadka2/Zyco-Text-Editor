@@ -15,16 +15,14 @@ class ZycoEditor:
         self.root.title("Zyco@{}".format(socket.gethostbyaddr(socket.gethostname())[0]))
         self.canvas = None
         self.text = tk.Text(self.root, width=400, height=100)
-
-    # def textInsertion(self):
-    #     self.text = tk.Text(self.root, width=400, height=100)
-    #     self.text.pack()
+        self.text.config(wrap='word')
+        self.wordsList = []
 
     def textDisplayed(self):
-        self.beginningText = tk.Text(self.root, width=400, height=100, font=40)
-        self.beginningText.insert('1.0 ', 'Welcome to Zyco')
-        self.beginningText.insert('1.0 lineend', "\nCreated by Bishal Khadka")
-        self.beginningText.pack()
+        self.text = tk.Text(self.root, width=400, height=100, font=40)
+        self.text.insert('1.0 ', 'Welcome to Zyco')
+        self.text.insert('1.0 lineend', "\nCreated by Bishal Khadka")
+        self.text.pack()
 
     def ProgressBar(self):
         myProgressBar = ttk.Progressbar(self.root, orient="horizontal", length=200)
@@ -39,28 +37,67 @@ class ZycoEditor:
         self.root = tk.mainloop()
 
     def uploadNewFile(self):
-        filename = filedialog.askopenfile()
-        text = filename.read()
+        filename = filedialog.askopenfile(title="Select Zyco file")
+        textInEditor = filename.read()
         dataClearance = messagebox.askyesnocancel(title="Clearing data...", message='''screen will be cleared
                                                                                    'and uploaded''')
 
-        if text and dataClearance:
+        if textInEditor and dataClearance:
             self.clearTheScreen()
-            self.beginningText.insert('1.0', text)
+            self.text.insert('1.0', textInEditor)
+
+    def highlightWord(self):
+        tags = self.text.tag_names("insert wordstart")
+        if "highlight" in tags:
+            self.text.tag_remove("highlight", "insert wordstart", "insert wordend")
+            # self.text.bind('<BackSpace>', lambda ran: self.justDeleteTheHiglightedWord())
+        else:
+            self.text.tag_add("highlight", "insert wordstart", "insert wordend")
+
+
+    def justDeleteTheHiglightedWord(self):
+        tags = self.text.tag_names("insert wordstart")
+        if 'highlight' in tags:
+            self.text.delete('highlight', 'insert wordstart', 'insert wordend')
 
     def clearTheScreen(self):
-        self.beginningText.delete('1.0', 'end')
+        self.text.delete('1.0', 'end')
 
     def undoEditorFunction(self):
         print("undo done")
+        self.wordsList.append(self.text.get('insert', 'wordend'))
+        self.text.delete('insert', 'insert wordend')
+        print(self.wordsList)
 
     def saveasFile(self):
         print("saved as called")
 
-    def searchword(self):
+    def selectAll(self):  # Selects and deletes if necessary
+        print("Select All")
+        self.text.tag_add('my_tag', '1.0', 'end')
+        self.text.tag_config('my_tag', background='yellow')
+        if 'my_tag':  # only deletes the all selected text
+            self.text.bind("<BackSpace>", lambda ran: self.clearTheScreen())
 
-        # self.beginningText.get(self.root, )
+    def unSelectAll(self):
+        print("Unselect all")
+        self.text.tag_delete('my_tag')
+
+    def searchword(self):
         print("Search command called")
+        # AllList = list()
+        # AllList.append(self.text.get('1.0', 'end'))
+        AllList = self.text.get('1.0', 'end')
+        print(AllList)
+        if 'Welcome' in AllList:
+            print("Found")
+        else:
+            print("Not found")
+        # tags = self.text.tag_names("insert wordstart")
+        # if "highlight" in tags:
+        #     self.text.tag_remove("highlight", "insert wordstart", "insert wordend")
+        # else:
+        #     self.text.tag_add("highlight", "insert wordstart", "insert wordend")
 
     def exitCommand(self):
         a = messagebox.askyesnocancel(title="Exiting...", message='Are you sure want to exit')
@@ -69,7 +106,7 @@ class ZycoEditor:
 
     def insertPictures(self):
         print("insert")
-        image = tk.PhotoImage(file="~/Desktop/Extras/SkydiveJuly4(2019)/G0269357.JPG")
+        image = tk.PhotoImage(file="~/Desktop/skydive.gif")
         self.text.image_create('insert', image=image)
 
     def capturingMouseEvent(self, event):
@@ -104,6 +141,11 @@ class ZycoEditor:
         editmenu = tk.Menu(menu)
         editmenu.add_command(label='Clear Screen', command=self.clearTheScreen, font=20)
         editmenu.add_command(label="Undo", command=self.undoEditorFunction, font=20)
+        editmenu.add_command(label='Select All(Ctrl-A)', command=self.selectAll, font=20)
+        editmenu.add_command(label="Unselect All(Ctrl-Q)", command=self.unSelectAll, font=20)
+        editmenu.add_command(label="Highlight/unHighlight", command=self.highlightWord, font=20)
+        editmenu.add_command(label="Delete All", command=self.clearTheScreen, font=20)
+        editmenu.add_command(label="Delete Highlighted", command=self.justDeleteTheHiglightedWord, font=20)
         menu.add_cascade(label="Edit", menu=editmenu, font=30)
 
         exitmenu = tk.Menu(menu)
@@ -134,7 +176,14 @@ class ZycoEditor:
         print(action)
 
     def KeyboardEvent(self):
-        self.root.bind('<Control-z>', lambda ran: self.shortcut('Undo'))
+        self.text.bind('<Control-z>', lambda ran: self.undoEditorFunction())
+        self.text.bind('<Control-a>', lambda ran: self.selectAll())
+        self.text.bind('<Control-q>', lambda ran: self.unSelectAll())
+        self.text.bind('<Control-s>', lambda ran: self.shortcut('Save'))
+        self.text.bind('<Control-m>', lambda ran: self.shortcut('Save as'))
+        self.text.bind('<Double-Button-1>', lambda ran: self.highlightWord())
+        self.text.tag_configure("highlight", background="green")
+
 
     def NavigationForDrawCommand(self):
         menu = tk.Menu(self.root)
@@ -150,6 +199,5 @@ if __name__ == '__main__':
     editorObj.navigation()
     editorObj.ProgressBar()
     editorObj.textDisplayed()
-    # editorObj.textInsertion()
     editorObj.KeyboardEvent()
     editorObj.mainLoopHandling()
