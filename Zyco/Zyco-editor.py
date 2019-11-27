@@ -17,6 +17,7 @@ class ZycoEditor:
         self.text = tk.Text(self.root, width=400, height=100)
         self.text.config(wrap='word')
         self.wordsList = []
+        self.spaces = 4
 
     def textDisplayed(self):
         self.text = tk.Text(self.root, width=400, height=100, font=40)
@@ -46,20 +47,6 @@ class ZycoEditor:
             self.clearTheScreen()
             self.text.insert('1.0', textInEditor)
 
-    def highlightWord(self):
-        tags = self.text.tag_names("insert wordstart")
-        if "highlight" in tags:
-            self.text.tag_remove("highlight", "insert wordstart", "insert wordend")
-            # self.text.bind('<BackSpace>', lambda ran: self.justDeleteTheHiglightedWord())
-        else:
-            self.text.tag_add("highlight", "insert wordstart", "insert wordend")
-
-
-    def justDeleteTheHiglightedWord(self):
-        tags = self.text.tag_names("insert wordstart")
-        if 'highlight' in tags:
-            self.text.delete('highlight', 'insert wordstart', 'insert wordend')
-
     def clearTheScreen(self):
         self.text.delete('1.0', 'end')
 
@@ -72,32 +59,14 @@ class ZycoEditor:
     def saveasFile(self):
         print("saved as called")
 
-    def selectAll(self):  # Selects and deletes if necessary
-        print("Select All")
-        self.text.tag_add('my_tag', '1.0', 'end')
-        self.text.tag_config('my_tag', background='yellow')
-        if 'my_tag':  # only deletes the all selected text
-            self.text.bind("<BackSpace>", lambda ran: self.clearTheScreen())
-
-    def unSelectAll(self):
-        print("Unselect all")
-        self.text.tag_delete('my_tag')
-
     def searchword(self):
         print("Search command called")
-        # AllList = list()
-        # AllList.append(self.text.get('1.0', 'end'))
         AllList = self.text.get('1.0', 'end')
         print(AllList)
         if 'Welcome' in AllList:
             print("Found")
         else:
             print("Not found")
-        # tags = self.text.tag_names("insert wordstart")
-        # if "highlight" in tags:
-        #     self.text.tag_remove("highlight", "insert wordstart", "insert wordend")
-        # else:
-        #     self.text.tag_add("highlight", "insert wordstart", "insert wordend")
 
     def exitCommand(self):
         a = messagebox.askyesnocancel(title="Exiting...", message='Are you sure want to exit')
@@ -144,7 +113,6 @@ class ZycoEditor:
         editmenu.add_command(label='Select All(Ctrl-A)', command=self.selectAll, font=20)
         editmenu.add_command(label="Unselect All(Ctrl-Q)", command=self.unSelectAll, font=20)
         editmenu.add_command(label="Highlight/unHighlight", command=self.highlightWord, font=20)
-        editmenu.add_command(label="Delete All", command=self.clearTheScreen, font=20)
         editmenu.add_command(label="Delete Highlighted", command=self.justDeleteTheHiglightedWord, font=20)
         menu.add_cascade(label="Edit", menu=editmenu, font=30)
 
@@ -175,6 +143,70 @@ class ZycoEditor:
     def shortcut(self, action):
         print(action)
 
+    def selectAll(self):  # Selects and deletes if necessary
+        print("Select All")
+        print(self.text.tag_names())
+        self.text.tag_add('selectAllTag', '1.0', 'end')
+        self.text.tag_config('selectAllTag', background='yellow')
+
+    def backspaceBinding(self):
+        print("Backspace binding called")
+        tagsList = self.text.tag_names()
+        print(tagsList)
+        if 'selectAllTag' in tagsList:
+            print("delete for all")
+            self.text.bind('<BackSpace>', lambda ran: self.clearTheScreen())
+            # self.clearTheScreen()
+        elif 'highlight' in tagsList:
+            print("delete for selected")
+            self.text.bind('<BackSpace>', lambda ran: self.justDeleteTheHiglightedWord())
+        else:
+            print("default delete")
+            self.text.bind('<BackSpace>', lambda ran: self.defaultDelete())
+            # pass
+
+    def defaultDelete(self):  # gaining default delete of tkinter
+        print("default delete")
+        self.text.delete('insert', 'insert')
+
+    def unSelectAll(self):
+        print("Unselect all")
+        self.text.tag_delete('selectAllTag')
+
+    def highlightWord(self):
+        print("highlightword called")
+        # self.text.tag_configure("highlight", background="yellow")
+        self.text.tag_config("highlight", background="yellow")
+        tags = self.text.tag_names("insert wordstart")
+        if "highlight" in tags:
+            self.text.tag_remove("highlight", "insert wordstart", "insert wordend")
+        else:
+            self.text.tag_add("highlight", "insert wordstart", "insert wordend")
+
+    def justDeleteTheHiglightedWord(self):
+        print("deleted highlight")
+        tags = self.text.tag_names("insert wordstart")
+        if 'selectAllTag' in tags:
+            self.text.delete('1.0', 'end')
+        elif 'highlight' in tags:
+            self.text.delete('insert wordstart', 'insert wordend')
+        else:
+            self.defaultDelete()
+
+    def tab(self):
+        print("tab pressed")
+        self.text.insert('insert', " " * self.spaces)
+        return 'break'
+
+    def unhighlight(self):
+        print("unhighlight called")
+        tags = self.text.tag_names('insert wordstart')
+        print(tags)
+        if 'selectAllTag' in tags:
+            self.text.tag_remove('selectAllTag', '1.0', 'end')
+        else:
+            self.text.tag_remove('highlight', 'insert wordstart', 'insert wordend')
+
     def KeyboardEvent(self):
         self.text.bind('<Control-z>', lambda ran: self.undoEditorFunction())
         self.text.bind('<Control-a>', lambda ran: self.selectAll())
@@ -182,8 +214,10 @@ class ZycoEditor:
         self.text.bind('<Control-s>', lambda ran: self.shortcut('Save'))
         self.text.bind('<Control-m>', lambda ran: self.shortcut('Save as'))
         self.text.bind('<Double-Button-1>', lambda ran: self.highlightWord())
-        self.text.tag_configure("highlight", background="green")
-
+        # self.text.tag_configure("highlight", background="yellow")
+        self.text.bind('<Tab>', lambda ran: self.tab())
+        self.text.bind('<BackSpace>', lambda ran: self.backspaceBinding())
+        self.text.bind('<Button-1>', lambda ran: self.unhighlight())
 
     def NavigationForDrawCommand(self):
         menu = tk.Menu(self.root)
