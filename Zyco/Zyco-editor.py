@@ -6,7 +6,8 @@ from tkinter import filedialog
 from tkinter import Frame
 import os
 import sys
-
+from tkinter.scrolledtext import ScrolledText
+from tkinter import simpledialog
 
 class ZycoEditor:
     def __init__(self):
@@ -14,13 +15,15 @@ class ZycoEditor:
         self.root.geometry('1000x900')
         self.root.title("Zyco@{}".format(socket.gethostbyaddr(socket.gethostname())[0]))
         self.canvas = None
-        self.text = tk.Text(self.root, width=400, height=100)
+        self.text = tk.Text(self.root, width=400, height=100, undo=True, autoseparators=True, maxundo=-1)
         self.text.config(wrap='word')
         self.wordsList = []
         self.spaces = 4
+        self.image = None
+        self.restoringImage = []
 
     def textDisplayed(self):
-        self.text = tk.Text(self.root, width=400, height=100, font=40)
+        self.text = tk.Text(self.root, width=400, height=100, font=40, undo=True, autoseparators=True, maxundo=-1)
         self.text.insert('1.0 ', 'Welcome to Zyco')
         self.text.insert('1.0 lineend', "\nCreated by Bishal Khadka")
         self.text.pack()
@@ -33,6 +36,9 @@ class ZycoEditor:
         myProgressBar.config(variable=value)
         scale = ttk.Scale(self.root, orient='horizontal', length=200, variable=value, from_=0.0, to=11.0)
         scale.pack()
+
+    def scrollBar(self):
+        self.textBox = ScrolledText(self.root, borderwidth=3, relief='sunken')
 
     def mainLoopHandling(self):
         self.root = tk.mainloop()
@@ -50,23 +56,42 @@ class ZycoEditor:
     def clearTheScreen(self):
         self.text.delete('1.0', 'end')
 
-    def undoEditorFunction(self):
-        print("undo done")
-        self.wordsList.append(self.text.get('insert', 'wordend'))
-        self.text.delete('insert', 'insert wordend')
-        print(self.wordsList)
-
     def saveasFile(self):
         print("saved as called")
 
     def searchword(self):
         print("Search command called")
+        self.text.tag_config("red_tag", foreground="red")
         AllList = self.text.get('1.0', 'end')
-        print(AllList)
-        if 'Welcome' in AllList:
-            print("Found")
+        response = simpledialog.askstring("Search For Word", " Enter the name to search")
+        if response.lower() in AllList.lower():
+            messagebox.showinfo("Found", "Word Found")
+            offset = '+%dc' % len(response)
+            pos_start = self.text.search(response, '1.0', 'end')
+            while pos_start:
+                pos_end = pos_start + offset
+                self.text.tag_add('red_tag', pos_start, pos_end)
+                pos_start = self.text.search(response, pos_end, 'end')
+
         else:
-            print("Not found")
+            messagebox.showinfo("Not Found", "Sorry, word not found")
+
+    def highlightPython(self):
+        print("Search command called")
+        self.text.tag_config("red_tag", foreground="red")
+        AllList = self.text.get('1.0', 'end')
+        response = simpledialog.askstring("Search For Word", " Enter the name to search")
+        if response.lower() in AllList.lower():
+            messagebox.showinfo("Found", "Word Found")
+            offset = '+%dc' % len(response)
+            pos_start = self.text.search(response, '1.0', 'end')
+            while pos_start:
+                pos_end = pos_start + offset
+                self.text.tag_add('red_tag', pos_start, pos_end)
+                pos_start = self.text.search(response, pos_end, 'end')
+
+        else:
+            messagebox.showinfo("Not Found", "Sorry, word not found")
 
     def exitCommand(self):
         a = messagebox.askyesnocancel(title="Exiting...", message='Are you sure want to exit')
@@ -75,8 +100,16 @@ class ZycoEditor:
 
     def insertPictures(self):
         print("insert")
-        image = tk.PhotoImage(file="~/Desktop/skydive.gif")
-        self.text.image_create('insert', image=image)
+        filename = filedialog.askopenfile()
+        print(filename.name)
+        messagebox.showinfo("File Path Name Info", "File path name is printed on console, copy and paste in box")
+        response = simpledialog.askstring("File Path Entry", prompt='Enter file path')
+        self.image = tk.PhotoImage(file=response)
+        self.restoringImage.append(self.image)
+        if self.image in self.restoringImage:
+            self.text.image_create('insert', image=self.image)
+        print("Displayed")
+
 
     def capturingMouseEvent(self, event):
         global prev
@@ -109,7 +142,6 @@ class ZycoEditor:
 
         editmenu = tk.Menu(menu)
         editmenu.add_command(label='Clear Screen', command=self.clearTheScreen, font=20)
-        editmenu.add_command(label="Undo", command=self.undoEditorFunction, font=20)
         editmenu.add_command(label='Select All(Ctrl-A)', command=self.selectAll, font=20)
         editmenu.add_command(label="Unselect All(Ctrl-Q)", command=self.unSelectAll, font=20)
         editmenu.add_command(label="Highlight/unHighlight", command=self.highlightWord, font=20)
@@ -121,7 +153,8 @@ class ZycoEditor:
         menu.add_cascade(label="Exit", menu=exitmenu, font=30)
 
         searchmenu = tk.Menu(menu)
-        searchmenu.add_command(label='Search', command=self.searchword, font=20)
+        searchmenu.add_command(label='Search(Ctrl-F)', command=self.searchword, font=20)
+        searchmenu.add_command(label='Unhighlight Searched word(Ctrl-P)', command=self.unhighlightSearchedWord)
         menu.add_cascade(label="Search", menu=searchmenu, font=30)
 
         terminal = tk.Menu(menu)
@@ -147,7 +180,9 @@ class ZycoEditor:
         print("Select All")
         print(self.text.tag_names())
         self.text.tag_add('selectAllTag', '1.0', 'end')
-        self.text.tag_config('selectAllTag', background='yellow')
+        self.text.tag_config('selectAllTag',  background='yellow')
+        self.text.bind('<BackSpace>', lambda ran: self.justDeleteTheHiglightedWord())
+        print(self.text.tag_names())
 
     def backspaceBinding(self):
         print("Backspace binding called")
@@ -155,13 +190,17 @@ class ZycoEditor:
         print(tagsList)
         if 'selectAllTag' in tagsList:
             print("delete for all")
-            self.text.bind('<BackSpace>', lambda ran: self.clearTheScreen())
+            # self.clearTheScreen()
+            self.text.bind('<BackSpace>', lambda ran: self.justDeleteTheHiglightedWord())
+            print("successful")
             # self.clearTheScreen()
         elif 'highlight' in tagsList:
             print("delete for selected")
+            # self.justDeleteTheHiglightedWord()
             self.text.bind('<BackSpace>', lambda ran: self.justDeleteTheHiglightedWord())
         else:
             print("default delete")
+            # self.defaultDelete()
             self.text.bind('<BackSpace>', lambda ran: self.defaultDelete())
             # pass
 
@@ -175,7 +214,6 @@ class ZycoEditor:
 
     def highlightWord(self):
         print("highlightword called")
-        # self.text.tag_configure("highlight", background="yellow")
         self.text.tag_config("highlight", background="yellow")
         tags = self.text.tag_names("insert wordstart")
         if "highlight" in tags:
@@ -204,20 +242,25 @@ class ZycoEditor:
         print(tags)
         if 'selectAllTag' in tags:
             self.text.tag_remove('selectAllTag', '1.0', 'end')
-        else:
+        if 'highlight' in tags:
             self.text.tag_remove('highlight', 'insert wordstart', 'insert wordend')
+        # else:
+        #     self.text.tag_remove('red_tag', '1.0', 'end')
+
+    def unhighlightSearchedWord(self):
+        self.text.tag_remove('red_tag', '1.0', 'end')
 
     def KeyboardEvent(self):
-        self.text.bind('<Control-z>', lambda ran: self.undoEditorFunction())
         self.text.bind('<Control-a>', lambda ran: self.selectAll())
         self.text.bind('<Control-q>', lambda ran: self.unSelectAll())
         self.text.bind('<Control-s>', lambda ran: self.shortcut('Save'))
         self.text.bind('<Control-m>', lambda ran: self.shortcut('Save as'))
         self.text.bind('<Double-Button-1>', lambda ran: self.highlightWord())
-        # self.text.tag_configure("highlight", background="yellow")
         self.text.bind('<Tab>', lambda ran: self.tab())
         self.text.bind('<BackSpace>', lambda ran: self.backspaceBinding())
         self.text.bind('<Button-1>', lambda ran: self.unhighlight())
+        self.text.bind('<Control-f>', lambda ran: self.searchword())
+        self.text.bind('<Control-p>', lambda ran: self.unhighlightSearchedWord())
 
     def NavigationForDrawCommand(self):
         menu = tk.Menu(self.root)
@@ -233,5 +276,6 @@ if __name__ == '__main__':
     editorObj.navigation()
     editorObj.ProgressBar()
     editorObj.textDisplayed()
+    editorObj.scrollBar()
     editorObj.KeyboardEvent()
     editorObj.mainLoopHandling()
