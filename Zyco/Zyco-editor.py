@@ -9,6 +9,7 @@ import sys
 from tkinter.scrolledtext import ScrolledText
 from tkinter import simpledialog
 
+
 class ZycoEditor:
     def __init__(self):
         self.root = tk.Tk()
@@ -21,6 +22,8 @@ class ZycoEditor:
         self.spaces = 4
         self.image = None
         self.restoringImage = []
+        self.fileName = None
+        self.filePathStatus = None
 
     def textDisplayed(self):
         self.text = tk.Text(self.root, width=400, height=100, font=40, undo=True, autoseparators=True, maxundo=-1)
@@ -44,6 +47,7 @@ class ZycoEditor:
         self.root = tk.mainloop()
 
     def uploadNewFile(self):
+        self.filePathStatus = False
         filename = filedialog.askopenfile(title="Select Zyco file")
         textInEditor = filename.read()
         dataClearance = messagebox.askyesnocancel(title="Clearing data...", message='''screen will be cleared
@@ -58,6 +62,28 @@ class ZycoEditor:
 
     def saveasFile(self):
         print("saved as called")
+        self.filePathStatus = True
+        fileContent = self.text.get('1.0', 'end')
+        print(fileContent)
+        file = filedialog.asksaveasfile(title='Save as')
+        self.fileName = file.name
+        print(self.fileName)
+        if self.fileName:
+            with open(self.fileName, 'w') as W:
+                W.write(fileContent)
+            W.close()
+        else:
+            print("Could not find a file to Save")
+
+    def save(self):
+        print("Save called")
+        fileContent = self.text.get('1.0', 'end')
+        if self.fileName and self.filePathStatus:
+            with open(self.fileName, 'w') as W:
+                W.write(fileContent)
+            W.close()
+        else:
+            self.saveasFile()
 
     def searchword(self):
         print("Search command called")
@@ -76,22 +102,22 @@ class ZycoEditor:
         else:
             messagebox.showinfo("Not Found", "Sorry, word not found")
 
-    def highlightPython(self):
-        print("Search command called")
-        self.text.tag_config("red_tag", foreground="red")
-        AllList = self.text.get('1.0', 'end')
-        response = simpledialog.askstring("Search For Word", " Enter the name to search")
-        if response.lower() in AllList.lower():
-            messagebox.showinfo("Found", "Word Found")
-            offset = '+%dc' % len(response)
-            pos_start = self.text.search(response, '1.0', 'end')
-            while pos_start:
-                pos_end = pos_start + offset
-                self.text.tag_add('red_tag', pos_start, pos_end)
-                pos_start = self.text.search(response, pos_end, 'end')
-
-        else:
-            messagebox.showinfo("Not Found", "Sorry, word not found")
+    # def highlightPython(self):
+    #     print("Search command called")
+    #     self.text.tag_config("red_tag", foreground="red")
+    #     AllList = self.text.get('1.0', 'end')
+    #     response = simpledialog.askstring("Search For Word", " Enter the name to search")
+    #     if response.lower() in AllList.lower():
+    #         messagebox.showinfo("Found", "Word Found")
+    #         offset = '+%dc' % len(response)
+    #         pos_start = self.text.search(response, '1.0', 'end')
+    #         while pos_start:
+    #             pos_end = pos_start + offset
+    #             self.text.tag_add('red_tag', pos_start, pos_end)
+    #             pos_start = self.text.search(response, pos_end, 'end')
+    #
+    #     else:
+    #         messagebox.showinfo("Not Found", "Sorry, word not found")
 
     def exitCommand(self):
         a = messagebox.askyesnocancel(title="Exiting...", message='Are you sure want to exit')
@@ -109,7 +135,6 @@ class ZycoEditor:
         if self.image in self.restoringImage:
             self.text.image_create('insert', image=self.image)
         print("Displayed")
-
 
     def capturingMouseEvent(self, event):
         global prev
@@ -134,9 +159,10 @@ class ZycoEditor:
         self.root.config(menu=menu)
 
         file = tk.Menu(menu)
-        file.add_command(label="Upload File", command=self.uploadNewFile, font=20)
+        file.add_command(label="Upload File(Ctrl-O)", command=self.uploadNewFile, font=20)
         menu.add_cascade(label="File", menu=file, font=30)
-        file.add_command(label="Save as..", command=self.saveasFile, font=20)
+        file.add_command(label="Save(Ctrl-S)", command=self.saveasFile, font=20)
+        file.add_command(label="Save as..(Ctrl-S)", command=self.saveasFile, font=20)
         file.add_command(label="Draw", command=self.creatingCanvas, font=20)
         file.add_command(label="Insert Pictures", command=self.insertPictures, font=20)
 
@@ -173,8 +199,8 @@ class ZycoEditor:
         else:
             os.system('iTerm -into %d -geometry 400x600 -sb &' % wid)
 
-    def shortcut(self, action):
-        print(action)
+    # def shortcut(self, action):
+    #     print(action)
 
     def selectAll(self):  # Selects and deletes if necessary
         print("Select All")
@@ -253,14 +279,14 @@ class ZycoEditor:
     def KeyboardEvent(self):
         self.text.bind('<Control-a>', lambda ran: self.selectAll())
         self.text.bind('<Control-q>', lambda ran: self.unSelectAll())
-        self.text.bind('<Control-s>', lambda ran: self.shortcut('Save'))
-        self.text.bind('<Control-m>', lambda ran: self.shortcut('Save as'))
+        self.text.bind('<Control-s>', lambda ran: self.save())
         self.text.bind('<Double-Button-1>', lambda ran: self.highlightWord())
         self.text.bind('<Tab>', lambda ran: self.tab())
         self.text.bind('<BackSpace>', lambda ran: self.backspaceBinding())
         self.text.bind('<Button-1>', lambda ran: self.unhighlight())
         self.text.bind('<Control-f>', lambda ran: self.searchword())
         self.text.bind('<Control-p>', lambda ran: self.unhighlightSearchedWord())
+        self.text.bind('<Control-o>', lambda ran: self.uploadNewFile())
 
     def NavigationForDrawCommand(self):
         menu = tk.Menu(self.root)
