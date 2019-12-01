@@ -5,6 +5,7 @@ from tkinter import messagebox
 from tkinter import filedialog
 from tkinter import Frame
 import os
+import sys
 
 class ZycoEditor:
     def __init__(self):
@@ -97,7 +98,11 @@ class ZycoEditor:
         terminalUbuntu = Frame(self.root, height=600, width=700)
         terminalUbuntu.pack(fill='both', expand='yes')
         wid = terminalUbuntu.winfo_id()
-        os.system('xterm -into %d -geometry 400x600 -sb &' % wid)
+        print(os.system)
+        if sys.platform == "linux":
+            os.system('xterm -into %d -geometry 400x600 -sb &' % wid)
+        else:
+            os.system('terminator')
 
 
 if __name__ == '__main__':
