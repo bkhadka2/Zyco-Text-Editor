@@ -6,10 +6,16 @@ from tkinter import filedialog
 from tkinter import Frame
 import os
 import sys
+<<<<<<< HEAD
+=======
 from tkinter.scrolledtext import ScrolledText
 from tkinter import simpledialog
 
+<<<<<<< HEAD
 fontFlag = False
+=======
+>>>>>>> 9d8bf1596b50fa90e00876fe6706e93f5ae330a5
+>>>>>>> 723c1ef49a18116648e9fc7210b96908d200cd51
 
 class ZycoEditor:
     def __init__(self):
@@ -213,6 +219,13 @@ class ZycoEditor:
         terminalUbuntu = Frame(self.root, height=600, width=700)
         terminalUbuntu.pack(fill='both', expand='yes')
         wid = terminalUbuntu.winfo_id()
+<<<<<<< HEAD
+        print(os.system)
+        if sys.platform == "linux":
+            os.system('xterm -into %d -geometry 400x600 -sb &' % wid)
+        else:
+            os.system('terminator')
+=======
         if sys.platform == 'linux':
             os.system('xterm -into %d -geometry 400x600 -sb &' % wid)
         else:
@@ -417,6 +430,7 @@ class ZycoEditor:
         file = tk.Menu(menu)
         menu.add_cascade(label="File", menu=file, font=30)
         file.add_command(label="Save as..", command=self.saveasFile, font=20)
+>>>>>>> 9d8bf1596b50fa90e00876fe6706e93f5ae330a5
 
         clear = tk.Menu(menu)
         menu.add_cascade(label="Clear", menu=clear, font=30)
