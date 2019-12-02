@@ -14,7 +14,7 @@ class ZycoEditor:
     def __init__(self):
         self.root = tk.Tk()
         self.root.geometry('1000x900')
-        self.root.title("Zyco@{}".format(socket.gethostbyaddr(socket.gethostname())[0]))
+        self.root.title("Zyco@{} (Not Saved..)".format(socket.gethostbyaddr(socket.gethostname())[0]))
         self.canvas = None
         self.text = tk.Text(self.root, width=400, height=100, undo=True, autoseparators=True, maxundo=-1)
         self.text.config(wrap='word')
@@ -71,7 +71,7 @@ class ZycoEditor:
         if self.fileName:
             with open(self.fileName, 'w') as W:
                 W.write(fileContent)
-
+                self.root.title("Zyco@{} (Saved in {})".format(socket.gethostbyaddr(socket.gethostname())[0], self.fileName))
             W.close()
         else:
             print("Could not find a file to Save")
@@ -82,6 +82,7 @@ class ZycoEditor:
         if self.fileName and self.filePathStatus:
             with open(self.fileName, 'w') as W:
                 W.write(fileContent)
+                self.root.title("Zyco@{} (Saved in {})".format(socket.gethostbyaddr(socket.gethostname())[0], self.fileName))
             W.close()
         else:
             self.saveasFile()
@@ -195,10 +196,12 @@ class ZycoEditor:
         menu.add_cascade(label="Change-Font", menu=fontMenu, font=30)
 
         textWeight = tk.Menu(menu)
-        textWeight.add_command(label='Bold', command=self.makingBold, font=20)
+        textWeight.add_command(label='Bold(Ctrl-B)', command=self.makingBold, font=20)
         textWeight.add_command(label='Remove bold', command=self.removeBold, font=20)
-        textWeight.add_command(label='Underline', command=self.underline, font=20)
+        textWeight.add_command(label='Underline(Ctrl-U)', command=self.underline, font=20)
         textWeight.add_command(label='Remove Underline', command=self.removeUnderline, font=20)
+        textWeight.add_command(label='Italic(Ctrl-R)', command=self.italic, font=20)
+        textWeight.add_command(label='Remove Italic', command=self.removeItalic, font=20)
         menu.add_cascade(label="Change-Text-Weight", menu=textWeight, font=30)
 
         terminal = tk.Menu(menu)
@@ -229,7 +232,6 @@ class ZycoEditor:
         if 'selectAllTag' in tags:
             self.text.tag_add('fontChangeCourier', '1.0', 'end')
             self.text.tag_config('fontChangeCourier', font="Courier")
-        # if 'highlight' in tags:
         else:
             self.text.tag_add('fontChangeCourier', 'insert', 'insert wordend')
             self.text.tag_config('fontChangeCourier', font="Courier")
@@ -250,7 +252,6 @@ class ZycoEditor:
         if 'selectAllTag' in tags:
             self.text.tag_add('fontChangeTimes', '1.0', 'end')
             self.text.tag_config('fontChangeTimes', font="Times")
-        # if 'highlight' in tags:
         else:
             self.text.tag_add('fontChangeTimes', 'insert', 'insert wordend')
             self.text.tag_config('fontChangeTimes', font="Times")
@@ -261,7 +262,6 @@ class ZycoEditor:
         if 'selectAllTag' in tags:
             self.text.tag_add('fontChangeSymbol', '1.0', 'end')
             self.text.tag_config('fontChangeSymbol', font="Symbol")
-        # if 'highlight' in tags:
         else:
             self.text.tag_add('fontChangeSymbol', 'insert', 'insert wordend')
             self.text.tag_config('fontChangeSymbol', font="Symbol")
@@ -290,7 +290,6 @@ class ZycoEditor:
         if 'selectAllTag' in tags:
             self.text.tag_add('underline', '1.0', 'end')
             self.text.tag_config('underline', underline=True)
-        # if 'highlight' in tags:
         else:
             self.text.tag_add('underline', 'insert', 'insert wordend')
             self.text.tag_config('underline', underline=True)
@@ -303,12 +302,22 @@ class ZycoEditor:
         else:
             self.text.tag_remove('underline', 'insert', 'insert wordend')
 
-    def defaultFontForALL(self):
-        print('Symbol font called')
+    def italic(self):
         tags = self.text.tag_names()
         if 'selectAllTag' in tags:
-            self.text.tag_add('fontChangeSymbol', '1.0', 'end')
-            self.text.tag_config('fontChangeSymbol', font="Symbol")
+            self.text.tag_add('italictag', '1.0', 'end')
+            self.text.tag_config('italictag', font='Symbol 12 italic')
+        else:
+            self.text.tag_add('italictag', 'insert', 'insert wordend')
+            self.text.tag_config('italictag', font='Symbol 12 italic')
+
+    def removeItalic(self):
+        tags = self.text.tag_names()
+        print(tags)
+        if 'selectAllTag' in tags:
+            self.text.tag_remove('italictag', '1.0', 'end')
+        else:
+            self.text.tag_remove('italictag', 'insert', 'insert wordend')
 
     def selectAll(self):  # Selects and deletes if necessary
         print("Select All")
@@ -383,20 +392,10 @@ class ZycoEditor:
         print(tags)
         if 'selectAllTag' in tags:
             self.text.tag_remove('selectAllTag', '1.0', 'end')
-        # elif 'highlight' in tags:
         else:
             self.text.tag_remove('highlight', 'insert wordstart', 'insert wordend')
         self.unSelectAll()
-        # if 'fontChange' in tags:
-        # else:
-            # self.text.tag_delete('fontChange')
-
         print(tags)
-
-        # if 'highlight' in tags and fontFlag == True:
-        #     self.text.
-        # else:
-        #     self.text.tag_remove('red_tag', '1.0', 'end')
 
     def unhighlightSearchedWord(self):
         self.text.tag_remove('red_tag', '1.0', 'end')
@@ -414,6 +413,7 @@ class ZycoEditor:
         self.text.bind('<Control-o>', lambda ran: self.uploadNewFile())
         self.text.bind('<Control-b>', lambda ran: self.makingBold())
         self.text.bind('<Control-u>', lambda ran: self.underline())
+        self.text.bind('<Control-r>', lambda ran: self.italic())
 
     def NavigationForDrawCommand(self):
         menu = tk.Menu(self.root)
