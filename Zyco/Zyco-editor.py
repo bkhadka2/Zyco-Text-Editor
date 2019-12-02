@@ -9,6 +9,7 @@ import sys
 from tkinter.scrolledtext import ScrolledText
 from tkinter import simpledialog
 
+fontFlag = False
 
 class ZycoEditor:
     def __init__(self):
@@ -28,7 +29,7 @@ class ZycoEditor:
     def textDisplayed(self):
         self.text = tk.Text(self.root, width=400, height=100, font=40, undo=True, autoseparators=True, maxundo=-1)
         self.text.insert('1.0 ', 'Welcome to Zyco')
-        self.text.insert('1.0 lineend', "\nCreated by Bishal Khadka")
+        self.text.insert('1.0 lineend', "\nCreated by Bishal Khadka, Rupesh Panta, and Jose Cervantes")
         self.text.pack()
 
     def ProgressBar(self):
@@ -71,6 +72,7 @@ class ZycoEditor:
         if self.fileName:
             with open(self.fileName, 'w') as W:
                 W.write(fileContent)
+
             W.close()
         else:
             print("Could not find a file to Save")
@@ -149,6 +151,9 @@ class ZycoEditor:
         self.canvas.bind('<ButtonPress>', self.capturingMouseEvent)
         self.canvas.bind('<B1-Motion>', self.drawOnTheScreen)
 
+    def deleteCanvasImage(self):
+        self.canvas.delete('all')
+
     def drawOnTheScreen(self, event):
         global prev
         self.canvas.create_line(prev.x, prev.y, event.x, event.y, width=5)
@@ -183,6 +188,20 @@ class ZycoEditor:
         searchmenu.add_command(label='Unhighlight Searched word(Ctrl-P)', command=self.unhighlightSearchedWord)
         menu.add_cascade(label="Search", menu=searchmenu, font=30)
 
+        fontMenu = tk.Menu(menu)
+        fontMenu.add_command(label='Courier font', command=self.changingFontCourier, font=20)
+        fontMenu.add_command(label='Halvetica font', command=self.changingFontHelvetica, font=20)
+        fontMenu.add_command(label='Times font', command=self.changingFontTimes, font=20)
+        fontMenu.add_command(label='Default font', command=self.defaultFont, font=20)
+        menu.add_cascade(label="Change-Font", menu=fontMenu, font=30)
+
+        textWeight = tk.Menu(menu)
+        textWeight.add_command(label='Bold', command=self.makingBold, font=20)
+        textWeight.add_command(label='Remove bold', command=self.removeBold, font=20)
+        textWeight.add_command(label='Underline', command=self.underline, font=20)
+        textWeight.add_command(label='Remove Underline', command=self.removeUnderline, font=20)
+        menu.add_cascade(label="Change-Text-Weight", menu=textWeight, font=30)
+
         terminal = tk.Menu(menu)
         terminal.add_command(label='Terminal', command=self.integratedTerminal, font=20)
         menu.add_cascade(label="Terminal", menu=terminal, font=30)
@@ -199,8 +218,92 @@ class ZycoEditor:
         else:
             os.system('iTerm -into %d -geometry 400x600 -sb &' % wid)
 
-    # def shortcut(self, action):
-    #     print(action)
+    def changingFontCourier(self):
+        print('Courier called')
+        tags = self.text.tag_names()
+        if 'selectAllTag' in tags:
+            self.text.tag_add('fontChangeCourier', '1.0', 'end')
+            self.text.tag_config('fontChangeCourier', font="Courier")
+        # if 'highlight' in tags:
+        else:
+            self.text.tag_add('fontChangeCourier', 'insert', 'insert wordend')
+            self.text.tag_config('fontChangeCourier', font="Courier")
+
+    def changingFontHelvetica(self):
+        print('Halvetica')
+        tags = self.text.tag_names()
+        if 'selectAllTag' in tags:
+            self.text.tag_add('fontChangeHelvetica', '1.0', 'end')
+            self.text.tag_config('fontChangeHelvetica', font="Helvetica")
+        else:
+            self.text.tag_add('fontChangeHelvetica', 'insert', 'insert wordend')
+            self.text.tag_config('fontChangeHelvetica', font="Helvetica")
+
+    def changingFontTimes(self):
+        print('Times called')
+        tags = self.text.tag_names()
+        if 'selectAllTag' in tags:
+            self.text.tag_add('fontChangeTimes', '1.0', 'end')
+            self.text.tag_config('fontChangeTimes', font="Times")
+        # if 'highlight' in tags:
+        else:
+            self.text.tag_add('fontChangeTimes', 'insert', 'insert wordend')
+            self.text.tag_config('fontChangeTimes', font="Times")
+
+    def defaultFont(self):
+        print('Symbol font called')
+        tags = self.text.tag_names()
+        if 'selectAllTag' in tags:
+            self.text.tag_add('fontChangeSymbol', '1.0', 'end')
+            self.text.tag_config('fontChangeSymbol', font="Symbol")
+        # if 'highlight' in tags:
+        else:
+            self.text.tag_add('fontChangeSymbol', 'insert', 'insert wordend')
+            self.text.tag_config('fontChangeSymbol', font="Symbol")
+
+    def makingBold(self):
+        print("Bold called")
+        tags = self.text.tag_names()
+        if 'selectAllTag' in tags:
+            self.text.tag_add('tagbold', '1.0', 'end')
+            self.text.tag_config('tagbold', font='Symbol 15 bold')
+        # if 'highlight' in tags:
+        else:
+            self.text.tag_add('tagbold', 'insert', 'insert wordend')
+            self.text.tag_config('tagbold', font='Symbol 15 bold')
+
+    def removeBold(self):
+        tags = self.text.tag_names()
+        print(tags)
+        if 'selectAllTag' in tags:
+            self.text.tag_remove('tagbold', '1.0', 'end')
+        else:
+            self.text.tag_remove('tagbold', 'insert', 'insert wordend')
+
+    def underline(self):
+        tags = self.text.tag_names()
+        if 'selectAllTag' in tags:
+            self.text.tag_add('underline', '1.0', 'end')
+            self.text.tag_config('underline', underline=True)
+        # if 'highlight' in tags:
+        else:
+            self.text.tag_add('underline', 'insert', 'insert wordend')
+            self.text.tag_config('underline', underline=True)
+
+    def removeUnderline(self):
+        tags = self.text.tag_names()
+        print(tags)
+        if 'selectAllTag' in tags:
+            self.text.tag_remove('underline', '1.0', 'end')
+        else:
+            self.text.tag_remove('underline', 'insert', 'insert wordend')
+
+    def defaultFontForALL(self):
+        print('Symbol font called')
+        tags = self.text.tag_names()
+        if 'selectAllTag' in tags:
+            self.text.tag_add('fontChangeSymbol', '1.0', 'end')
+            self.text.tag_config('fontChangeSymbol', font="Symbol")
 
     def selectAll(self):  # Selects and deletes if necessary
         print("Select All")
@@ -240,12 +343,16 @@ class ZycoEditor:
 
     def highlightWord(self):
         print("highlightword called")
+        print(self.text.tag_names())
         self.text.tag_config("highlight", background="yellow")
         tags = self.text.tag_names("insert wordstart")
         if "highlight" in tags:
             self.text.tag_remove("highlight", "insert wordstart", "insert wordend")
+        # elif 'fontChange' in tags and fontFlag == True:
+        #     self.text.tag_remove('fontChange', 'insert wordstart', 'insert wordend')
         else:
             self.text.tag_add("highlight", "insert wordstart", "insert wordend")
+        print(self.text.tag_names())
 
     def justDeleteTheHiglightedWord(self):
         print("deleted highlight")
@@ -262,14 +369,27 @@ class ZycoEditor:
         self.text.insert('insert', " " * self.spaces)
         return 'break'
 
+    def forFontTag(self):
+        self.text.tag_delete('fontChange')
+
     def unhighlight(self):
         print("unhighlight called")
         tags = self.text.tag_names('insert wordstart')
         print(tags)
         if 'selectAllTag' in tags:
             self.text.tag_remove('selectAllTag', '1.0', 'end')
-        if 'highlight' in tags:
+        # elif 'highlight' in tags:
+        else:
             self.text.tag_remove('highlight', 'insert wordstart', 'insert wordend')
+        self.unSelectAll()
+        # if 'fontChange' in tags:
+        # else:
+            # self.text.tag_delete('fontChange')
+
+        print(tags)
+
+        # if 'highlight' in tags and fontFlag == True:
+        #     self.text.
         # else:
         #     self.text.tag_remove('red_tag', '1.0', 'end')
 
@@ -287,6 +407,8 @@ class ZycoEditor:
         self.text.bind('<Control-f>', lambda ran: self.searchword())
         self.text.bind('<Control-p>', lambda ran: self.unhighlightSearchedWord())
         self.text.bind('<Control-o>', lambda ran: self.uploadNewFile())
+        self.text.bind('<Control-b>', lambda ran: self.makingBold())
+        self.text.bind('<Control-u>', lambda ran: self.underline())
 
     def NavigationForDrawCommand(self):
         menu = tk.Menu(self.root)
@@ -295,6 +417,10 @@ class ZycoEditor:
         file = tk.Menu(menu)
         menu.add_cascade(label="File", menu=file, font=30)
         file.add_command(label="Save as..", command=self.saveasFile, font=20)
+
+        clear = tk.Menu(menu)
+        menu.add_cascade(label="Clear", menu=clear, font=30)
+        clear.add_command(label="clear", command=self.deleteCanvasImage, font=20)
 
 
 if __name__ == '__main__':
