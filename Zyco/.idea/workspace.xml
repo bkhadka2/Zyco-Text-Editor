@@ -24,8 +24,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Zyco-editor.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="176">
-              <caret line="77" lean-forward="true" selection-start-line="77" selection-end-line="77" />
+            <state relative-caret-position="121">
+              <caret line="134" selection-start-line="134" selection-end-line="134" />
             </state>
           </provider>
         </entry>
@@ -82,10 +82,10 @@
     </option>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="989" />
-    <option name="y" value="25" />
-    <option name="width" value="931" />
-    <option name="height" value="1055" />
+    <option name="x" value="291" />
+    <option name="y" value="158" />
+    <option name="width" value="1397" />
+    <option name="height" value="791" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
@@ -205,12 +205,12 @@
       <window_info id="Favorites" order="6" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" sideWeight="0.4960452" visible="true" weight="0.31641468" />
+      <window_info anchor="bottom" id="Run" order="2" sideWeight="0.4960452" weight="0.36177105" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.39874083" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" />
-      <window_info anchor="bottom" id="Terminal" order="7" sideWeight="0.49839914" weight="0.22678186" />
+      <window_info active="true" anchor="bottom" id="Terminal" order="7" sideWeight="0.49839914" visible="true" weight="0.22678186" />
       <window_info anchor="bottom" id="Event Log" order="8" sideWeight="0.5039548" side_tool="true" weight="0.32829374" />
       <window_info anchor="bottom" id="Version Control" order="9" />
       <window_info anchor="bottom" id="Inspection Results" order="10" weight="0.32937366" />
@@ -236,8 +236,8 @@
     <entry file="file://$PROJECT_DIR$/Hi.py" />
     <entry file="file://$PROJECT_DIR$/Zyco-editor.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="176">
-          <caret line="77" lean-forward="true" selection-start-line="77" selection-end-line="77" />
+        <state relative-caret-position="121">
+          <caret line="134" selection-start-line="134" selection-end-line="134" />
         </state>
       </provider>
     </entry>

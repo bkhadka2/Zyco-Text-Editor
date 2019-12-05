@@ -92,46 +92,34 @@ class ZycoEditor:
         self.text.tag_config("red_tag", foreground="red")
         AllList = self.text.get('1.0', 'end')
         response = simpledialog.askstring("Search For Word", " Enter the name to search")
-        if response in AllList:
+        if response.lower() in AllList.lower():
             messagebox.showinfo("Found", "Word Found")
             offset = '+%dc' % len(response)
             pos_start = self.text.search(response, '1.0', 'end')
             while pos_start:
                 pos_end = pos_start + offset
-                self.text.tag_add('red_tag', pos_start, pos_end)
-                pos_start = self.text.search(response, pos_end, 'end')
-        elif response.lower() in AllList:
-            messagebox.showinfo("Found", "Word Found")
-            response = response.lower()
-            offset = '+%dc' % len(response)
-            pos_start = self.text.search(response, '1.0', 'end')
-            while pos_start:
-                pos_end = pos_start + offset
-                self.text.tag_add('red_tag', pos_start, pos_end)
-                pos_start = self.text.search(response, pos_end, 'end')
-
-        elif response.upper() in AllList:
-            messagebox.showinfo("Found", "Word Found")
-            response = response.upper()
-            offset = '+%dc' % len(response)
-            pos_start = self.text.search(response, '1.0', 'end')
-            while pos_start:
-                pos_end = pos_start + offset
-                self.text.tag_add('red_tag', pos_start, pos_end)
-                pos_start = self.text.search(response, pos_end, 'end')
-
-        elif response.capitalize() in AllList:
-            messagebox.showinfo("Found", "Word Found")
-            response = response.capitalize()
-            offset = '+%dc' % len(response)
-            pos_start = self.text.search(response, '1.0', 'end')
-            while pos_start:
-                pos_end = pos_start + offset
-                self.text.tag_add('red_tag', pos_start, pos_end)
+                self.texft.tag_add('red_tag', pos_start, pos_end)
                 pos_start = self.text.search(response, pos_end, 'end')
 
         else:
             messagebox.showinfo("Not Found", "Sorry, word not found")
+
+    # def highlightPython(self):
+    #     print("Search command called")
+    #     self.text.tag_config("red_tag", foreground="red")
+    #     AllList = self.text.get('1.0', 'end')
+    #     response = simpledialog.askstring("Search For Word", " Enter the name to search")
+    #     if response.lower() in AllList.lower():
+    #         messagebox.showinfo("Found", "Word Found")
+    #         offset = '+%dc' % len(response)
+    #         pos_start = self.text.search(response, '1.0', 'end')
+    #         while pos_start:
+    #             pos_end = pos_start + offset
+    #             self.text.tag_add('red_tag', pos_start, pos_end)
+    #             pos_start = self.text.search(response, pos_end, 'end')
+    #
+    #     else:
+    #         messagebox.showinfo("Not Found", "Sorry, word not found")
 
     def exitCommand(self):
         a = messagebox.askyesnocancel(title="Exiting...", message='Are you sure want to exit')
@@ -448,3 +436,4 @@ if __name__ == '__main__':
     editorObj.scrollBar()
     editorObj.KeyboardEvent()
     editorObj.mainLoopHandling()
+
