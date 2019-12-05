@@ -10,5 +10,12 @@ It is a text-editor
 - Terminal
 - Draw on the go
 - Insert pictures
-- Search and replace
+- Search (Case insensitive)
 - Keyboard and Mouse binding functionality
+- Make text Bold, italic, or underline text
+- Change text to different font styles.
+
+## Team
+- [x] Bishal Khadka
+- [x] Rupesh Panta
+- [x] Jose Cervantes
