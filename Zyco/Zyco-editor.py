@@ -278,6 +278,7 @@ class ZycoEditor:
             self.text.tag_add('fontChangeSymbol', 'insert', 'insert wordend')
             self.text.tag_config('fontChangeSymbol', font="Symbol")
 
+
     def makingBold(self):
         print("Bold called")
         tags = self.text.tag_names()
